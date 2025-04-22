@@ -7,29 +7,39 @@ const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthContext();
 
-  const signup = async (username, email, password, confirmPassword) => {
-    const success = handleInputErrors(username, email, password, confirmPassword);
+  const signup = async (username, email, password, confirmPassword, name, position, responsibility, department, email_2) => {
+    const success = handleInputErrors(username, email, password, confirmPassword, name, position, responsibility, department, email_2);
     if (!success) return;
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          name,
+          position,
+          responsibility,
+          department,
+          email_2
+        }),
       });
 
       const data = await res.json();
       if (data.error) {
         throw new Error(data.error);
       }
-      
-      localStorage.setItem("user", JSON.stringify(data));
-      setAuthUser(data);
-      toast.success("Account created successfully!");
 
+      // Set user in context and local storage
+      localStorage.setItem("auth-user", JSON.stringify(data));
+      setAuthUser(data);
+      
+      toast.success("Signup successful!");
     } catch (error) {
-      toast.error(error.message || "Failed to create account");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -38,10 +48,9 @@ const useSignup = () => {
   return { loading, signup };
 };
 
-export default useSignup;
-
-function handleInputErrors(username, email, password, confirmPassword) {
-  if (!username || !email || !password || !confirmPassword) {
+// Validation function
+const handleInputErrors = (username, email, password, confirmPassword, name, position, responsibility, department, email_2) => {
+  if (!username || !email || !password || !confirmPassword || !name || !position || !responsibility || !department || !email_2) {
     toast.error("Please fill in all fields");
     return false;
   }
@@ -57,4 +66,6 @@ function handleInputErrors(username, email, password, confirmPassword) {
   }
 
   return true;
-}
+};
+
+export default useSignup;

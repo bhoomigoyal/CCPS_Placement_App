@@ -1,9 +1,11 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
+
+
 export const signup = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, name, position, responsibility, department, email_2 } = req.body;
         
         // Check if user already exists
         const userExists = await User.findOne({ email });
@@ -16,11 +18,16 @@ export const signup = async (req, res) => {
         const salt = await bcryptjs.genSalt(10);
         const hashedPassword = await bcryptjs.hash(password, salt);
         
-        // Create new user
+        // Create new user with all required fields
         const newUser = new User({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            name,
+            position,
+            responsibility,
+            department,
+            email_2
         });
         
         // Save user to database
@@ -33,7 +40,10 @@ export const signup = async (req, res) => {
         res.status(201).json({
             _id: newUser._id,
             username: newUser.username,
-            email: newUser.email
+            email: newUser.email,
+            name: newUser.name,
+            position: newUser.position,
+            department: newUser.department
         });
         
     } catch (error) {
