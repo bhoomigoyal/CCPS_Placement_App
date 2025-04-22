@@ -1,0 +1,18 @@
+/* src/screens/Signup/Signup.css */
+/* You can copy most styles from Login.css and add these additional styles */
+
+.login-link {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-link span {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.login-link span:hover {
+    color: #0056b3;
+}
